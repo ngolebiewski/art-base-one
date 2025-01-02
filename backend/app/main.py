@@ -1,5 +1,5 @@
 from fastapi import FastAPI, Depends, HTTPException
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, text
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm import Session
@@ -46,5 +46,35 @@ def get_artist_names(db: Session = Depends(get_db)):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Database query failed: {str(e)}")
 
+from sqlalchemy.exc import SQLAlchemyError
+
+@app.get("/artworks/all")
+def get_all_artworks(db: Session = Depends(get_db)):
+    """
+    Fetches all rows from the 'art_list' view in the database.
+
+    Args:
+        db (Session): The database session dependency.
+
+    Returns:
+        dict: A dictionary with a "data" key containing a list of rows as dictionaries.
+    """
+    try:
+        # Query the 'art_list' view
+        result = db.execute(text("SELECT * FROM art_list"))
+        rows = result.mappings().all()
+
+        # Convert the rows to a list of dictionaries for JSON serialization
+        data = [dict(row) for row in rows]
+
+        return {"data": data}
+    except SQLAlchemyError as e:
+        # Log or print error details for debugging
+        raise HTTPException(status_code=500, detail="Database query failed.") from e
+    except Exception as e:
+        # Catch any other unexpected errors
+        raise HTTPException(status_code=500, detail=f"An unexpected error occurred: {str(e)}")
+
+    
 # Create all tables in the database
 Base.metadata.create_all(bind=engine)
