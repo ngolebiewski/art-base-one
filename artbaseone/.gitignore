@@ -1,12 +1,3 @@
-/venv
-.env
-__pycache__
-fastapi_tutorial/
-
-#######################
-# Node and Vite Stuff #
-#######################
-
 # Logs
 logs
 *.log

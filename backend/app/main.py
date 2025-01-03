@@ -1,4 +1,5 @@
 from fastapi import FastAPI, Depends, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import create_engine, text
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
@@ -7,6 +8,15 @@ from models import Artwork, Artist, Base
 
 # Initialize FastAPI app
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Replace with your frontend URL in production
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 @app.get("/")
 def read_root():
@@ -75,6 +85,25 @@ def get_all_artworks(db: Session = Depends(get_db)):
         # Catch any other unexpected errors
         raise HTTPException(status_code=500, detail=f"An unexpected error occurred: {str(e)}")
 
+@app.get("/artworks/{artwork_id}")
+async def read_artwork(artwork_id: int, db: Session = Depends(get_db)):
+    try:
+        result = db.execute(text("SELECT * FROM art_list WHERE id = :artwork_id"), {"artwork_id": artwork_id})
+        rows = result.mappings().all()
+
+        if not rows:
+            raise HTTPException(status_code=404, detail="Artwork not found.")
+
+        # Convert the rows to a list of dictionaries for JSON serialization
+        data = [dict(row) for row in rows]
+
+        return {"artwork": data}
+    except SQLAlchemyError as e:
+        # Log or print error details for debugging
+        raise HTTPException(status_code=500, detail="Database query failed.") from e
+    except Exception as e:
+        # Catch any other unexpected errors
+        raise HTTPException(status_code=500, detail=f"An unexpected error occurred: {str(e)}")
     
 # Create all tables in the database
 Base.metadata.create_all(bind=engine)
