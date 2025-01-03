@@ -4,7 +4,8 @@ CREATE TABLE "users" (
     "username" TEXT NOT NULL,
     "password" TEXT NOT NULL,
     "email" TEXT NOT NULL,
-    PRIMARY KEY("id")   
+    "admin" TEXT DEFAULT(0) CHECK("admin" IN (0,1))
+    PRIMARY KEY("id")
 );
 
 -- Represent artist entities in this table
@@ -57,6 +58,7 @@ CREATE TABLE "artworks" (
     "size" TEXT NOT NULL,
      -- mediums of artwork via a join table
     "year" INTEGER,
+    "end_year" INTEGER,
     "image_url" TEXT,
     "hi_res_url" TEXT,
     "description" TEXT,
@@ -149,7 +151,7 @@ JOIN "artworks" ON "artworks"."department"= "sections"."id";
 
 -- An overall view of the artworks for humans to read, filling in the artist name, mediums, series, and department from their id numbers. 
 CREATE VIEW "art_list" AS
-SELECT "artists"."id", first_name || ' ' || last_name AS "name", "artworks"."title", "size", "year", "mediums", "artworks"."image_url", "artworks"."description", 
+SELECT "artworks"."id", first_name || ' ' || last_name AS "name", "artworks"."title", "size", "year", "mediums", "artworks"."image_url", "artworks"."description", 
     "series_by_artwork"."name" AS "series", "department_by_artwork"."name" AS "department", "price", "sold"
 FROM ARTWORKS
 JOIN ARTISTS ON "artists"."id" = "artworks"."artist_id"

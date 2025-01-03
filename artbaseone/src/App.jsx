@@ -4,8 +4,9 @@ import axios from "axios";
 function App() {
   const [titles, setTitles] = useState([]); // State to store artwork titles
   const [error, setError] = useState(null); // State to store any errors
-  const [artworks, setArtworks] = useState([]);
-  const apiUrl = import.meta.env.VITE_API_URL || "/api";  // Use environment variable or fallback to relative API path
+  const [artworks, setArtworks] = useState([]); // State to store artworks
+  const [expandedImage, setExpandedImage] = useState(null); // State to track the expanded image
+  const apiUrl = import.meta.env.VITE_API_URL || "/api"; // Use environment variable or fallback to relative API path
 
   useEffect(() => {
     const fetchTitles = async () => {
@@ -21,8 +22,7 @@ function App() {
     const fetchArtworks = async () => {
       try {
         const { data } = await axios.get(`${apiUrl}/artworks/all`);
-        console.log(data.data);
-        setArtworks(data.data);
+        setArtworks(data.data); // Set artworks from the response
       } catch (err) {
         setError("Failed to load artworks");
         console.error(err);
@@ -33,6 +33,10 @@ function App() {
     fetchArtworks();
   }, []);
 
+  // Function to toggle image expansion
+  const toggleImageExpansion = (imageId) => {
+    setExpandedImage(expandedImage === imageId ? null : imageId);
+  };
 
   return (
     <>
@@ -48,18 +52,21 @@ function App() {
         <p>Loading titles...</p>
       )}
 
-
-
-<h1>Artworks</h1>
+      <h1>Artworks</h1>
       {artworks.length > 0 ? (
         <ul>
-          {artworks.map((artwork, index) => (
-            <li key={index}>
+          {artworks.map((artwork) => (
+            <li key={artwork.id}>
               <h3>{artwork.title}</h3>
               <img
                 src={artwork.image_url}
                 alt={artwork.title}
-                style={{ maxWidth: "200px", height: "auto" }}
+                style={{
+                  maxWidth: expandedImage === artwork.id ? "100%" : "200px",
+                  height: "auto",
+                  cursor: "pointer",
+                }}
+                onClick={() => toggleImageExpansion(artwork.id)}
               />
             </li>
           ))}
@@ -69,9 +76,6 @@ function App() {
       )}
     </>
   );
-
-
-
 }
 
 export default App;

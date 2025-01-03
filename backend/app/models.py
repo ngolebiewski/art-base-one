@@ -13,6 +13,7 @@ class User(Base):
     username = Column(String, nullable=False)
     password = Column(String, nullable=False)
     email = Column(String, nullable=False)
+    admin = Column(Integer, default=0, nullable=False)
 
 # Artists Table
 class Artist(Base):
@@ -67,6 +68,7 @@ class Artwork(Base):
     title = Column(String, nullable=False)
     size = Column(String, nullable=False)
     year = Column(Integer, nullable=True)
+    end_year = Column(Integer, nullable=True)
     image_url = Column(String, nullable=True)
     hi_res_url = Column(String, nullable=True)
     description = Column(Text, nullable=True)
