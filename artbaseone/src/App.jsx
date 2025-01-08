@@ -21,7 +21,7 @@ function App() {
 
     const fetchArtworks = async () => {
       try {
-        const { data } = await axios.get(`${apiUrl}/artworks/all`);
+        const { data } = await axios.get(`${apiUrl}/artworks`);
         setArtworks(data.data); // Set artworks from the response
       } catch (err) {
         setError("Failed to load artworks");

@@ -143,6 +143,15 @@ BEGIN
     WHERE "id" = NEW."artwork_id";
 END;
 
+CREATE TRIGGER "remove_artwork_from_mediums"
+AFTER DELETE ON artworks
+FOR EACH ROW
+BEGIN
+    DELETE FROM "artworks_mediums"
+    WHERE artwork_id = OLD.id;
+END;
+    
+
 -- CREATE A VIEW WITH ALL INFO PLACED INTO THE ARTWORKS TAB --> mediums, series, artist names
 
 -- It's tedious to query a join table to list the mediums an artwork is made out of, therefore creating this view.

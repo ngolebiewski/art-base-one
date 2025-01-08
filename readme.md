@@ -19,4 +19,4 @@ Dev log:
 
 ## TODO:
 - Python script to import CSV of artworks.
-- Avoid duplication of 
+- Avoid duplication of artworks
