@@ -117,7 +117,7 @@ INSERT INTO "artworks" ("artist_id", "title", "size", "year", "image_url", "depa
 VALUES 
     ((SELECT "id" FROM "artists" WHERE "last_name" = "Picasso"), 'Femme aux Bras Croisés (Woman with Folded Arms)', '81 × 58 cm', 1901, 
         '/studio_artist/images/femme_aux_bras_croises.jpg', 
-        (SELECT "id" FROM "department" WHERE "name" = 'Painting'),
+        (SELECT "id" FROM "departments" WHERE "name" = 'Painting'),
         (SELECT "id" FROM "series" WHERE "name" = 'Blue Period')
         )
 ;
