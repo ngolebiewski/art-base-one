@@ -4,7 +4,7 @@ CREATE TABLE "users" (
     "username" TEXT NOT NULL,
     "password" TEXT NOT NULL,
     "email" TEXT NOT NULL,
-    "admin" TEXT DEFAULT(0) CHECK("admin" IN (0,1))
+    "admin" TEXT DEFAULT(0) CHECK("admin" IN (0,1)),
     PRIMARY KEY("id")
 );
 
@@ -23,17 +23,27 @@ CREATE TABLE "artists" (
     PRIMARY KEY("id")
 );
 
--- These are the units that art can be organized within.
--- Originally I had a `series` AND a `department` table, but decided to consolidate since the columns were identical
--- and added in the 'type' field to differentiate. 
-CREATE TABLE "sections"(
+-- These (DEPARTMENT and SERIES) are the units that art can be organized within.
+-- Department is overarching, a great umbrella, such as "paintings"
+CREATE TABLE "departments"(
     "id" INTEGER, 
     "name" TEXT NOT NULL UNIQUE,
-    "description" TEXT NOT NULL CHECK(length(description) <= 300),
-    "type" TEXT NOT NULL CHECK("type" IN('series', 'department')),
+    "description" TEXT CHECK(length(description) <= 300),
     "web" INTEGER CHECK("web" IN (0, 1)),
     "order" INTEGER,
     PRIMARY KEY("id")
+);
+
+-- Series is a specific grouping of artworks to one artist. Such as Picasso's "Blue Period"
+CREATE TABLE "series"(
+    "id" INTEGER, 
+    "artist_id" INTEGER NOT NULL,
+    "name" TEXT NOT NULL UNIQUE,
+    "description" TEXT CHECK(length(description) <= 300),
+    "web" INTEGER CHECK("web" IN (0, 1)),
+    "order" INTEGER,
+    PRIMARY KEY("id"),
+    FOREIGN KEY("artist_id") REFERENCES "artists"("id")
 );
 
 CREATE TABLE "mediums"(
@@ -70,8 +80,14 @@ CREATE TABLE "artworks" (
     "sold" INTEGER NOT NULL DEFAULT(0) CHECK("sold" IN (0,1)), -- False/0 = not sold, True/1 = sold
     PRIMARY KEY("id"),
     FOREIGN KEY("artist_id") REFERENCES "artists"("id"),
-    FOREIGN KEY("department") REFERENCES "section"("id"),
-    FOREIGN KEY("series") REFERENCES "section"("id") -- references a different section id, can you do this?
+    FOREIGN KEY("department") REFERENCES "departments"("id"),
+    FOREIGN KEY("series") REFERENCES "series"("id")
+);
+
+-- Use to add in additional images for an existing artwork.
+CREATE TABLE "additional_images" (
+    "artwork_id" INTEGER NOT NULL,
+    "image_url" TEXT NOT NULL
 );
 
 CREATE TABLE "organizations" (
@@ -137,27 +153,15 @@ JOIN "artworks_mediums" ON "mediums"."id" = "artworks_mediums"."medium_id"
 JOIN "artworks" ON "artworks_mediums"."artwork_id" = "artworks"."id"
 GROUP BY "title";
 
--- Adds name of series and attaches to artwork id
-CREATE VIEW "series_by_artwork" AS
-SELECT "name", "artworks"."id"
-FROM "sections"
-JOIN "artworks" ON "artworks"."series"= "sections"."id";
-
--- Adds name of department and attaches to artwork id
-CREATE VIEW "department_by_artwork" AS
-SELECT "name", "artworks"."id"
-FROM "sections"
-JOIN "artworks" ON "artworks"."department"= "sections"."id";
-
 -- An overall view of the artworks for humans to read, filling in the artist name, mediums, series, and department from their id numbers. 
 CREATE VIEW "art_list" AS
 SELECT "artworks"."id", first_name || ' ' || last_name AS "name", "artworks"."title", "size", "year", "mediums", "artworks"."image_url", "artworks"."description", 
-    "series_by_artwork"."name" AS "series", "department_by_artwork"."name" AS "department", "price", "sold"
+    "series"."name" AS "series", "departments"."name" AS "department", "price", "sold"
 FROM ARTWORKS
 JOIN ARTISTS ON "artists"."id" = "artworks"."artist_id"
 JOIN "mediums_by_artwork" ON "mediums_by_artwork"."id" = "artworks"."id"
-LEFT JOIN "series_by_artwork" ON "series_by_artwork"."id" = "artworks"."id"
-LEFT JOIN "department_by_artwork" ON "department_by_artwork"."id" = "artworks"."id"
+LEFT JOIN "series" ON "series"."id" = "artworks"."series"
+LEFT JOIN "departments" ON "departments"."id" = "artworks"."department"
 ORDER BY "artists"."last_name" ASC, "artworks"."id" ASC
 ;
 

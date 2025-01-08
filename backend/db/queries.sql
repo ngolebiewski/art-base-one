@@ -71,23 +71,26 @@ SET "image_url" = '/images/grand-street-gouache.jpg'
 WHERE "title" = 'Grand Street';
 
 -- create a series called "Blue Period", info via https://en.wikipedia.org/wiki/Picasso%27s_Blue_Period
-INSERT INTO "sections" ("name", "description", "type")
-VALUES ("Blue Period", "The Blue Period (Spanish: Período Azul) comprises the works produced by Spanish painter Pablo Picasso between 1901 and 1904. During this time, Picasso painted essentially monochromatic paintings in shades of blue and blue-green, only occasionally warmed by other colors.", "series")
+INSERT INTO "series" ("name", "artist_id", "description")
+VALUES  ("Blue Period",
+        (SELECT "id" FROM "artists" WHERE "last_name" = "Picasso"),
+        "The Blue Period (Spanish: Período Azul) comprises the works produced by Spanish painter Pablo Picasso between 1901 and 1904. During this time, Picasso painted essentially monochromatic paintings in shades of blue and blue-green, only occasionally warmed by other colors."
+        )
 ;
 
 -- create another series called "Chinatown"
-INSERT INTO "sections" ("name", "description", "type")
-VALUES ("Chinatown", "Golebiewski's Chinatown series explores the vibrant neighborhood of NYC in watercolor and gouache, active 2012-present.", "series")
+INSERT INTO "series" ("name", "artist_id", "description")
+VALUES ("Chinatown", (SELECT "id" FROM "artists" WHERE "last_name" = "Golebiewski"), "Golebiewski's Chinatown series explores the vibrant neighborhood of NYC in watercolor and gouache, active 2012-present.", "series")
 ;
 
 -- delete a section if you make a typo!
 DELETE FROM "sections" WHERE "name" = 'Chinetown'
 
 -- create a set of departments, which are big umbrellas for artworks.
-INSERT INTO "sections" ("name", "description", "type")
-VALUES ("Painting", "All forms of painting, including oil, gouache, watercolor, etc.", "department"),
-        ("Film", "Video, super 8 film, 16mm, 35mm, and all other moving images", "department"),
-        ("Drawing-a-Day", "A daily drawing project", "department")
+INSERT INTO "departments" ("name", "description")
+VALUES ("Painting", "All forms of painting, including oil, gouache, watercolor, etc."),
+        ("Film", "Video, super 8 film, 16mm, 35mm, and all other moving images"),
+        ("Drawing-a-Day", "A daily drawing project")
 ;
 
 -- update ALL artwork's record to include its department
@@ -96,12 +99,12 @@ SET "department" = (SELECT "id" FROM "sections" WHERE "name" = 'Painting');
 
 -- update an artwork's record to include its series.
 UPDATE "artworks"
-SET "series" = (SELECT "id" FROM "sections" WHERE "name" = 'Blue Period')
+SET "series" = (SELECT "id" FROM "series" WHERE "name" = 'Blue Period')
 WHERE "title" = "The Old Guitarist";
 
 -- again...
 UPDATE "artworks"
-SET "series" = (SELECT "id" FROM "sections" WHERE "name" = "Chinatown")
+SET "series" = (SELECT "id" FROM "series" WHERE "name" = "Chinatown")
 WHERE "title" = "Grand Street";
 
 -- Update the price on Nick's painting...
@@ -114,8 +117,8 @@ INSERT INTO "artworks" ("artist_id", "title", "size", "year", "image_url", "depa
 VALUES 
     ((SELECT "id" FROM "artists" WHERE "last_name" = "Picasso"), 'Femme aux Bras Croisés (Woman with Folded Arms)', '81 × 58 cm', 1901, 
         '/studio_artist/images/femme_aux_bras_croises.jpg', 
-        (SELECT "id" FROM "sections" WHERE "name" = 'Painting'),
-        (SELECT "id" FROM "sections" WHERE "name" = 'Blue Period')
+        (SELECT "id" FROM "department" WHERE "name" = 'Painting'),
+        (SELECT "id" FROM "series" WHERE "name" = 'Blue Period')
         )
 ;
 

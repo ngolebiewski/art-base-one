@@ -23,7 +23,7 @@ def read_root():
     return {"message": "This is Art Base One"}
 
 # SQLite database URL (adjust the path to your db file)
-DATABASE_URL = "sqlite:///../db/artbasetwo.db"  # Update the path if needed
+DATABASE_URL = "sqlite:///../db/artbasethree.db"  # Update the path if needed
 
 # Set up SQLAlchemy engine and session maker
 engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
