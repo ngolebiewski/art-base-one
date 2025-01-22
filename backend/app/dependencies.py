@@ -2,7 +2,7 @@ from fastapi import Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker, Session
-from models import Base # Import necessary models
+from app.models import Base # Import necessary models
 
 # SQLite database URL (adjust the path to your db file)
 DATABASE_URL = "sqlite:///../db/artbasethree.db"  # Update the path if needed

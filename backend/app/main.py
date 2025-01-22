@@ -1,10 +1,11 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from routers import artworks, artists
-from dependencies import get_db
+from app.routers import artworks, artists, users
+# from dependencies import get_db
+
 # Initialize FastAPI app
 app = FastAPI(
-    title="Art Base API",
+    title="Art Base One",
     description="An API for managing artworks, artists, and more.",
     version="0.0.1",
 )
@@ -26,4 +27,4 @@ app.include_router(artists.router, prefix="/artists", tags=["artists"])
 app.include_router(artworks.router, prefix="/artworks", tags=["artworks"])
 
 # app.include_router(mediums.router, prefix="/mediums", tags=["mediums"])
-# app.include_router(users.router, prefix="/users", tags=["users"])
+app.include_router(users.router, prefix="/users", tags=["users"])

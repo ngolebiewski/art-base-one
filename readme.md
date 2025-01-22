@@ -15,7 +15,8 @@ Dev log:
 4. Connect to db, autogenerate models.py from schema written for sqlite db. Using 'artbasetwo.db'
 5. Figuring out FastAPI...(ongoing)
 6. Update schema, then update models.py --> reverse of how it should be done, but I feel invested in the schema as it stands -- along with the view. Will swap to model as primary source once switching databses to PostgreSQL
-
+7. How to run your FastAPI map in dev mode...
+    - `fastapi dev main.py`
 
 ## TODO:
 - Python script to import CSV of artworks.

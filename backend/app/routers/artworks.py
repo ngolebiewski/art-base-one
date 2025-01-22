@@ -2,8 +2,8 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.sql import text
-from dependencies import get_db, get_or_404
-from models import Artwork
+from app.dependencies import get_db, get_or_404
+from app.models import Artwork
 
 router = APIRouter()
 
