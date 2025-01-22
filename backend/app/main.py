@@ -3,7 +3,11 @@ from fastapi.middleware.cors import CORSMiddleware
 from routers import artworks, artists
 from dependencies import get_db
 # Initialize FastAPI app
-app = FastAPI()
+app = FastAPI(
+    title="Art Base API",
+    description="An API for managing artworks, artists, and more.",
+    version="0.0.1",
+)
 
 app.add_middleware(
     CORSMiddleware,

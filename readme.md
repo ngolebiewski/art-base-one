@@ -4,7 +4,7 @@ Dev log:
 1. Set up git + repo
 2. Make Virtual Environment
     a. `python3 -m venv venv`
-    b. `source venv/bin/activate`
+    b. Activate: `source venv/bin/activate`
     c. Deactivate with: `deactivate`
 3. Export SQLITE Database schema
     ```
