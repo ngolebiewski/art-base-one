@@ -11,9 +11,13 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
     """Verifies if the provided password matches the hashed password"""
     return pwd_context.verify(plain_password, hashed_password)
 
-if __name__ == "__main__":
+def main():
+    """Test functionality of password utillity functions."""
     pwd = 'TEST'
     print('password: ', pwd)
     hashed = hash_password(pwd)
     print('hashed: ', hashed)
     print('verified?: ', verify_password(pwd, hashed))
+
+if __name__ == "__main__":
+    main()
