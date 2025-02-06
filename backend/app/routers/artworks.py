@@ -69,7 +69,7 @@ def add_artwork(
         keywords=keywords,
         department=department,
         series=series,
-        date_added=datetime.utcnow(),
+        date_added=datetime.timezone.utc(),
         price=price,
         sold=sold
     )

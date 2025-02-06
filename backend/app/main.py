@@ -1,12 +1,12 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.routers import artworks, artists, users
-# from dependencies import get_db
+from app.dependencies import get_db
 
 # Initialize FastAPI app
 app = FastAPI(
     title="Art Base One",
-    description="An API for managing artworks, artists, and more.",
+    description="An API for managing artworks, artists and clients.",
     version="0.0.1",
 )
 

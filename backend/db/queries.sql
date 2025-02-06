@@ -218,6 +218,10 @@ SELECT "title", "sold" FROM "artworks" WHERE "sold" = 1;
 UPDATE "artworks" SET "sold" = 0 WHERE "title" = 'Grand Street';
 DELETE FROM "sold_artworks" WHERE "artwork_id" = (SELECT "id" FROM "artworks" WHERE "title" = "Grand Street");
 
+-- Add artist_name
+UPDATE "artists" SET "artist_name" = "Nick Golebiewski" WHERE "last_name" = 'Golebiewski';
+
+
 -- OTHER POSSIBLE QUERIES OUTSIDE THE SCOPE OF EXAMPLES FOR COMPLETING THIS PROJECT
     -- Find all artworks in a series
     -- List all series by an artist
